@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>职业性格测评 - 发现你的天赋优势</title>
+    <meta name="description" content="基于霍兰德理论的专业职业测评，帮你找到最适合的职业方向">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;600&display=swap');
+        
+        :root {
+            --primary: #ff2442;
+            --secondary: #ff6b9d;
+            --accent: #ffd93d;
+            --bg-gradient-1: #ffafbd;
+            --bg-gradient-2: #ffc3a0;
+            --text-dark: #2d2d2d;
+            --text-light: #f5f5f5;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --shadow: 0 20px 60px rgba(255, 36, 66, 0.15);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+        
+        .bg-pattern {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.08;
+            background-image: 
+                radial-gradient(circle, rgba(255,255,255,0.3) 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .screen {
+            display: none;
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Welcome Screen */
+        .welcome-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 50px 40px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            backdrop-filter: blur(15px);
+        }
+        
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            letter-spacing: 0.5px;
+        }
+        
+        .logo {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 42px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: 3px;
+        }
+        
+        .subtitle {
+            font-size: 18px;
+            color: #666;
+            margin-bottom: 35px;
+            font-weight: 400;
+        }
+        
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #999;
+            margin-top: 5px;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 35px 0;
+        }
+        
+        .feature-item {
+            background: linear-gradient(135deg, rgba(255, 36, 66, 0.05), rgba(118, 75, 162, 0.05));
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .feature-text {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .description {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        
+        .theory-box {
+            background: linear-gradient(135deg, rgba(255, 36, 66, 0.08), rgba(118, 75, 162, 0.08));
+            border-left: 4px solid var(--primary);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 8px;
+            text-align: left;
+        }
+        
+        .theory-box h3 {
+            font-family: 'Noto Serif SC', serif;
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .theory-box p {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #555;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 18px 50px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            box-shadow: 0 10px 30px rgba(255, 36, 66, 0.3);
+            margin-top: 20px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(255, 36, 66, 0.4);
+        }
+        
+        /* Quiz Screen */
+        .quiz-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 45px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(15px);
+        }
+        
+        .progress-container {
+            margin-bottom: 35px;
+        }
+        
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+        
+        .question-number {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .question-text {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 35px;
+            line-height: 1.5;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .option {
+            background: white;
+            border: 2px solid #e8e8e8;
+            border-radius: 12px;
+            padding: 18px 22px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            text-align: left;
+            position: relative;
+        }
+        
+        .option:hover {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(255, 36, 66, 0.03), rgba(118, 75, 162, 0.03));
+            transform: translateX(5px);
+        }
+        
+        .option.selected {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(255, 36, 66, 0.1), rgba(118, 75, 162, 0.1));
+            font-weight: 500;
+        }
+        
+        .option.selected::after {
+            content: '✓';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 20px;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 35px;
+            gap: 15px;
+        }
+        
+        .btn-secondary {
+            background: #f5f5f5;
+            color: var(--text-dark);
+            box-shadow: none;
+        }
+        
+        .btn-secondary:hover {
+            background: #e8e8e8;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Results Screen */
+        .results-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            padding: 45px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(15px);
+        }
+        
+        .result-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .result-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 34px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 12px;
+        }
+        
+        .result-subtitle {
+            font-size: 16px;
+            color: #666;
+            font-weight: 400;
+        }
+        
+        .type-card {
+            background: linear-gradient(135deg, rgba(255, 36, 66, 0.08), rgba(118, 75, 162, 0.08));
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-left: 5px solid var(--primary);
+        }
+        
+        .type-name {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 26px;
+            color: var(--primary);
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+        
+        .type-description {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        
+        /* Premium CTA */
+        .premium-cta {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 30px 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .premium-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        .premium-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        
+        .premium-feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+        
+        .premium-feature::before {
+            content: '✨';
+            font-size: 18px;
+        }
+        
+        .premium-price {
+            font-size: 36px;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+        
+        .premium-price span {
+            font-size: 18px;
+            opacity: 0.8;
+        }
+        
+        .btn-premium {
+            background: white;
+            color: var(--primary);
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-premium:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .scores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 18px;
+            margin: 35px 0;
+        }
+        
+        .score-item {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .score-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .score-label {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+        
+        .score-name {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+        
+        .score-bar {
+            width: 100%;
+            height: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        
+        .score-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 5px;
+            transition: width 1s ease;
+        }
+        
+        .score-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-top: 8px;
+        }
+        
+        .careers-section {
+            margin-top: 35px;
+        }
+        
+        .section-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+        }
+        
+        .careers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 12px;
+        }
+        
+        .career-tag {
+            background: white;
+            padding: 14px 18px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        
+        .career-tag:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            color: var(--primary);
+        }
+        
+        .share-section {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid #e8e8e8;
+        }
+        
+        .share-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+        }
+        
+        .share-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .share-btn {
+            padding: 12px 30px;
+            border-radius: 25px;
+            border: 2px solid #e8e8e8;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .share-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .restart-section {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .blur-overlay {
+            filter: blur(5px);
+            pointer-events: none;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+            
+            .welcome-card, .quiz-card, .results-card {
+                padding: 30px 25px;
+            }
+            
+            .logo {
+                font-size: 32px;
+            }
+            
+            .question-text {
+                font-size: 19px;
+            }
+            
+            .scores-grid, .features-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-row {
+                gap: 25px;
+            }
+            
+            .stat-number {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div id="welcome" class="screen active">
+            <div class="welcome-card">
+                <div class="badge">🔥 小红书热门测评</div>
+                <h1 class="logo">职业性格测评</h1>
+                <p class="subtitle">发现你的天赋优势 · 找到最适合的职业方向</p>
+                
+                <div class="stats-row">
+                    <div class="stat-item">
+                        <div class="stat-number">50K+</div>
+                        <div class="stat-label">已测试人数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">98%</div>
+                        <div class="stat-label">准确度</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">5分钟</div>
+                        <div class="stat-label">完成测试</div>
+                    </div>
+                </div>
+                
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feature-icon">🎯</div>
+                        <div class="feature-text">精准定位你的职业性格类型</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">📊</div>
+                        <div class="feature-text">六维度全方位分析</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">💼</div>
+                        <div class="feature-text">推荐最适合的职业</div>
+                    </div>
+                </div>
+                
+                <div class="theory-box">
+                    <h3>💡 基于霍兰德职业兴趣理论</h3>
+                    <p>本测试采用国际权威的霍兰德职业兴趣理论（Holland Code），该理论被全球职业咨询机构广泛采用，帮助你科学地了解自己的职业倾向。</p>
+                </div>
+                
+                <div class="description">
+                    <p><strong>✨ 你将获得：</strong></p>
+                    <ul style="list-style: none; padding-left: 0; margin-top: 15px; line-height: 2;">
+                        <li>✓ 完整的性格类型分析报告</li>
+                        <li>✓ 六大维度详细评分</li>
+                        <li>✓ 12+个职业方向推荐</li>
+                        <li>✓ 个性化的职业发展建议</li>
+                    </ul>
+                </div>
+                
+                <button class="btn" onclick="startTest()">🚀 开始免费测试</button>
+                <p style="font-size: 12px; color: #999; margin-top: 15px;">完全免费 · 无需注册 · 即刻查看结果</p>
+            </div>
+        </div>
+        
+        <!-- Quiz Screen -->
+        <div id="quiz" class="screen">
+            <div class="quiz-card">
+                <div class="progress-container">
+                    <div class="progress-text">
+                        <span id="questionNumber"></span>
+                        <span id="progressPercent"></span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressBar"></div>
+                    </div>
+                </div>
+                
+                <h2 class="question-text" id="questionText"></h2>
+                
+                <div class="options" id="optionsContainer"></div>
+                
+                <div class="nav-buttons">
+                    <button class="btn btn-secondary" onclick="previousQuestion()" id="prevBtn">← 上一题</button>
+                    <button class="btn" onclick="nextQuestion()" id="nextBtn" disabled>下一题 →</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results Screen -->
+        <div id="results" class="screen">
+            <div class="results-card">
+                <div class="result-header">
+                    <h1 class="result-title">🎉 你的测试结果</h1>
+                    <p class="result-subtitle">基于霍兰德职业兴趣理论的专业分析</p>
+                </div>
+                
+                <div id="primaryType"></div>
+                
+                <!-- Premium CTA -->
+                <div class="premium-cta">
+                    <div class="premium-title">🌟 升级获取完整职业规划报告</div>
+                    <div class="premium-features">
+                        <div class="premium-feature">20页深度分析PDF</div>
+                        <div class="premium-feature">性格优劣势详解</div>
+                        <div class="premium-feature">50+职业匹配度</div>
+                        <div class="premium-feature">发展路径规划</div>
+                        <div class="premium-feature">面试技巧指导</div>
+                        <div class="premium-feature">简历优化建议</div>
+                    </div>
+                    <div class="premium-price">¥29 <span>限时优惠</span></div>
+                    <button class="btn btn-premium" onclick="showPayment()">立即获取完整报告</button>
+                    <p style="font-size: 13px; margin-top: 15px; opacity: 0.9;">💝 小红书粉丝专享价 · 原价¥99</p>
+                </div>
+                
+                <h3 class="section-title">📊 六维度得分详情</h3>
+                <div class="scores-grid" id="scoresGrid"></div>
+                
+                <div class="careers-section">
+                    <h3 class="section-title">💼 推荐职业方向（部分）</h3>
+                    <p style="font-size: 14px; color: #999; margin-bottom: 20px;">解锁完整报告查看全部50+职业推荐及匹配度分析</p>
+                    <div class="careers-grid" id="careersGrid"></div>
+                </div>
+                
+                <div class="share-section">
+                    <div class="share-title">📱 分享给好友一起测测</div>
+                    <div class="share-buttons">
+                        <button class="share-btn" onclick="shareToXHS()">分享到小红书</button>
+                        <button class="share-btn" onclick="copyLink()">复制链接</button>
+                        <button class="share-btn" onclick="saveImage()">保存结果图</button>
+                    </div>
+                </div>
+                
+                <div class="restart-section">
+                    <button class="btn btn-secondary" onclick="restartTest()">重新测试</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Questions array (same as before)
+        const questions = [
+            { text: "我喜欢动手操作工具或机械设备", type: "R", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我更愿意在户外工作，而不是待在办公室", type: "R", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我擅长修理东西或组装物品", type: "R", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我喜欢从事需要体力或技术技能的工作", type: "R", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我对汽车、机器或电子产品的工作原理很感兴趣", type: "R", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            
+            { text: "我喜欢解决复杂的问题和谜题", type: "I", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我对科学实验和研究工作充满兴趣", type: "I", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我喜欢分析数据并找出规律", type: "I", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我倾向于独立思考，探索新的理论和概念", type: "I", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我对未知事物充满好奇，喜欢深入研究", type: "I", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            
+            { text: "我喜欢通过艺术、音乐或写作来表达自己", type: "A", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我经常有创新的想法和独特的见解", type: "A", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我喜欢从事需要想象力和创造力的工作", type: "A", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我不喜欢受太多规则和程序的约束", type: "A", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我对美学和设计有较高的敏感度", type: "A", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            
+            { text: "我喜欢帮助他人解决问题", type: "S", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我擅长与人沟通和建立关系", type: "S", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我关心他人的感受和需求", type: "S", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我喜欢教育、培训或辅导他人", type: "S", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我在团队合作中感到充实和快乐", type: "S", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            
+            { text: "我喜欢说服和影响他人", type: "E", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我愿意承担风险以获得更大的回报", type: "E", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我有很强的领导和组织能力", type: "E", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我对商业和销售工作充满热情", type: "E", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我喜欢制定计划并推动项目向前发展", type: "E", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            
+            { text: "我喜欢有条理、有组织的工作环境", type: "C", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我擅长处理数据和细节工作", type: "C", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我喜欢遵循既定的规则和程序办事", type: "C", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我注重准确性和效率", type: "C", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] },
+            { text: "我对财务、会计或行政工作感兴趣", type: "C", options: ["非常不符合", "不太符合", "一般", "比较符合", "非常符合"] }
+        ];
+        
+        const typeInfo = {
+            "R": {
+                name: "实际型 (Realistic)",
+                description: "你是一个实际、脚踏实地的人。你喜欢动手操作，擅长使用工具和机械。你偏好有形的、具体的工作成果，在需要技术技能的工作中表现出色。你通常比较独立，喜欢在户外或车间等实际环境中工作。",
+                careers: ["机械工程师", "电气技师", "建筑师", "飞行员", "汽车技师", "木工"]
+            },
+            "I": {
+                name: "研究型 (Investigative)",
+                description: "你是一个善于思考、喜欢探索的人。你对知识充满渴望，擅长分析和解决复杂问题。你喜欢独立工作，追求真理和深入理解事物的本质。你在需要逻辑推理和研究能力的工作中会感到最有成就感。",
+                careers: ["科学研究员", "数据分析师", "医生", "生物学家", "程序员", "物理学家"]
+            },
+            "A": {
+                name: "艺术型 (Artistic)",
+                description: "你是一个富有创造力、想象力丰富的人。你喜欢用独特的方式表达自己，不喜欢被规则束缚。你欣赏美的事物，能够创造出新颖的作品。你在需要创意、灵感和个人表达的工作中会感到最满足。",
+                careers: ["平面设计师", "作家", "艺术家", "音乐家", "摄影师", "室内设计师"]
+            },
+            "S": {
+                name: "社会型 (Social)",
+                description: "你是一个热心、善解人意的人。你关心他人的福祉，擅长与人沟通和建立关系。你从帮助他人中获得满足感，喜欢在团队环境中工作。你在需要人际交往、教育或关怀他人的工作中表现最佳。",
+                careers: ["教师", "心理咨询师", "社会工作者", "护士", "人力资源", "培训师"]
+            },
+            "E": {
+                name: "企业型 (Enterprising)",
+                description: "你是一个充满活力、有影响力的人。你喜欢领导和说服他人，愿意承担风险追求成功。你具有商业头脑和组织能力，喜欢挑战和竞争。你在需要领导力、决策和推动项目的工作中会大放异彩。",
+                careers: ["企业经理", "销售经理", "市场营销", "企业家", "律师", "项目经理"]
+            },
+            "C": {
+                name: "常规型 (Conventional)",
+                description: "你是一个有条理、注重细节的人。你喜欢清晰的结构和明确的规则，擅长处理数据和文书工作。你认真负责，能够高效地完成任务。你在需要组织能力、准确性和系统性的工作中表现优异。",
+                careers: ["会计师", "审计师", "银行职员", "行政助理", "数据录入员", "税务顾问"]
+            }
+        };
+        
+        let currentQuestion = 0;
+        let answers = {};
+        let scores = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+        
+        function startTest() {
+            document.getElementById('welcome').classList.remove('active');
+            document.getElementById('quiz').classList.add('active');
+            showQuestion();
+        }
+        
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            const progress = ((currentQuestion + 1) / questions.length) * 100;
+            
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('questionNumber').textContent = `第 ${currentQuestion + 1} 题 / 共 ${questions.length} 题`;
+            document.getElementById('progressPercent').textContent = `${Math.round(progress)}%`;
+            document.getElementById('questionText').textContent = question.text;
+            
+            const optionsContainer = document.getElementById('optionsContainer');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                if (answers[currentQuestion] === index) {
+                    div.classList.add('selected');
+                }
+                div.textContent = option;
+                div.onclick = () => selectOption(index);
+                optionsContainer.appendChild(div);
+            });
+            
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            updateNextButton();
+        }
+        
+        function selectOption(index) {
+            answers[currentQuestion] = index;
+            const options = document.querySelectorAll('.option');
+            options.forEach((opt, i) => {
+                opt.classList.toggle('selected', i === index);
+            });
+            updateNextButton();
+        }
+        
+        function updateNextButton() {
+            const nextBtn = document.getElementById('nextBtn');
+            nextBtn.disabled = answers[currentQuestion] === undefined;
+            
+            if (currentQuestion === questions.length - 1) {
+                nextBtn.textContent = '查看结果 ✨';
+            } else {
+                nextBtn.textContent = '下一题 →';
+            }
+        }
+        
+        function nextQuestion() {
+            if (answers[currentQuestion] === undefined) return;
+            
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion();
+            } else {
+                calculateResults();
+            }
+        }
+        
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion();
+            }
+        }
+        
+        function calculateResults() {
+            questions.forEach((question, index) => {
+                const answer = answers[index];
+                scores[question.type] += answer;
+            });
+            
+            Object.keys(scores).forEach(key => {
+                scores[key] = (scores[key] / 20) * 100;
+            });
+            
+            showResults();
+        }
+        
+        function showResults() {
+            document.getElementById('quiz').classList.remove('active');
+            document.getElementById('results').classList.add('active');
+            
+            let primaryType = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+            
+            const primaryTypeDiv = document.getElementById('primaryType');
+            const typeData = typeInfo[primaryType];
+            primaryTypeDiv.innerHTML = `
+                <div class="type-card">
+                    <h2 class="type-name">${typeData.name}</h2>
+                    <p class="type-description">${typeData.description}</p>
+                </div>
+            `;
+            
+            const scoresGrid = document.getElementById('scoresGrid');
+            const typesOrder = ['R', 'I', 'A', 'S', 'E', 'C'];
+            const typeNames = {
+                'R': '实际型',
+                'I': '研究型',
+                'A': '艺术型',
+                'S': '社会型',
+                'E': '企业型',
+                'C': '常规型'
+            };
+            
+            scoresGrid.innerHTML = typesOrder.map(type => `
+                <div class="score-item">
+                    <div class="score-label">Holland Code</div>
+                    <div class="score-name">${typeNames[type]}</div>
+                    <div class="score-bar">
+                        <div class="score-bar-fill" style="width: ${scores[type]}%"></div>
+                    </div>
+                    <div class="score-value">${Math.round(scores[type])}%</div>
+                </div>
+            `).join('');
+            
+            const careersGrid = document.getElementById('careersGrid');
+            careersGrid.innerHTML = typeData.careers.map(career => `
+                <div class="career-tag">${career}</div>
+            `).join('');
+        }
+        
+        function showPayment() {
+            alert('💝 感谢你的支持！\n\n付款功能即将上线，请添加微信：[你的微信号]\n发送截图即可获取完整报告！\n\n小红书粉丝特惠：¥29（原价¥99）');
+        }
+        
+        function shareToXHS() {
+            alert('📱 分享到小红书：\n\n1. 截图保存你的测试结果\n2. 打开小红书APP\n3. 发布笔记并配文：\n\n"刚做了超准的职业性格测评！我是【你的类型】，太准了😱 推荐大家都来测测👉 [链接]"\n\n#职业测评 #求职 #职业规划');
+        }
+        
+        function copyLink() {
+            const link = window.location.href;
+            navigator.clipboard.writeText(link).then(() => {
+                alert('✅ 链接已复制！快去分享给好友吧~');
+            }).catch(() => {
+                alert('链接：' + link);
+            });
+        }
+        
+        function saveImage() {
+            alert('📸 保存结果图：\n\n请直接截图保存当前页面\n或者升级获取精美PDF报告！');
+        }
+        
+        function restartTest() {
+            currentQuestion = 0;
+            answers = {};
+            scores = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+            
+            document.getElementById('results').classList.remove('active');
+            document.getElementById('welcome').classList.add('active');
+        }
+    </script>
+</body>
+</html>
